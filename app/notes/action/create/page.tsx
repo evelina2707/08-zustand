@@ -1,10 +1,6 @@
-'use client'
-
 import type { Metadata } from 'next';
-import css from './CreateNote.module.css'; 
-import NoteForm from '@/components/NoteForm/NoteForm';
-import { useRouter } from 'next/navigation';
-
+import css from './CreateNote.module.css';
+import CreateNoteClient from './CreateNoteClient'
 export const metadata: Metadata = {
   title: 'Створення нової нотатки | NoteHub',
   description: 'Сторінка для створення нової нотатки у застосунку NoteHub. Введіть текст, виберіть тег і збережіть запис.',
@@ -23,19 +19,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function CreateNote() {
-  const router = useRouter();
-
-  const handleCancel = () => {
-    router.push('/notes');
-  };
-
-
+export default function CreateNotePage() {
   return (
     <main className={css.main}>
       <div className={css.container}>
         <h1 className={css.title}>Create note</h1>
-        <NoteForm onCancel={handleCancel} />
+        <CreateNoteClient />
       </div>
     </main>
   );
