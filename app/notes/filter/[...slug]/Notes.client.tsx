@@ -6,9 +6,8 @@ import { fetchNotes } from '@/lib/api';
 import NoteList from '@/components/NoteList/NoteList';
 import SearchBox from '@/components/SearchBox/SearchBox';
 import Pagination from '@/components/Pagination/Pagination';
-import NoteForm from '@/components/NoteForm/NoteForm';
-import Modal from '@/components/Modal/Modal';
 import css from '@/components/NotesPage/NotesPage.module.css';
+import Link from 'next/link';
 
 type Props = {
   tag?: string;
@@ -18,7 +17,6 @@ export default function NotesClient({ tag }: Props) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => {
@@ -40,8 +38,6 @@ export default function NotesClient({ tag }: Props) {
       }),
     placeholderData: keepPreviousData,
   });
-  console.log('tag:', tag);
-console.log('data from fetchNotes:', data);
 
   const handleSearchChange = (value: string) => {
     setSearch(value);
@@ -55,9 +51,9 @@ console.log('data from fetchNotes:', data);
     <main className={css.app}>
       <div className={css.toolbar}>
         <SearchBox onChange={handleSearchChange} />
-        <button className={css.button} onClick={() => setIsModalOpen(true)}>
+        <Link href="/notes/action/create" className={css.button}>
           Create note +
-        </button>
+        </Link>
       </div>
 
       {data.totalPages > 1 && (
@@ -72,12 +68,6 @@ console.log('data from fetchNotes:', data);
         <NoteList notes={data.notes} />
       ) : (
         <p>No notes found.</p>
-      )}
-
-      {isModalOpen && (
-        <Modal onClose={() => setIsModalOpen(false)}>
-          <NoteForm onCancel={() => setIsModalOpen(false)} />
-        </Modal>
       )}
     </main>
   );
