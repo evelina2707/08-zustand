@@ -8,14 +8,13 @@ import NoteDetailsClient from './NoteDetails.client';
 import type { Metadata } from 'next';
 
 export async function generateMetadata(
-  { params }: { params: { id: string } }
+  params: Promise<{ id: string }>
 ): Promise<Metadata> {
-  const note = await fetchNoteById(params.id);
-
+  const { id } = await params;
+  const note = await fetchNoteById(id);
   const title = note
     ? `${note.title} | NoteHub`
     : 'Нотатку не знайдено | NoteHub';
-
   const description = note
     ? note.content.slice(0, 120) + (note.content.length > 120 ? '...' : '')
     : 'Сторінку нотатки не знайдено.';
@@ -26,7 +25,7 @@ export async function generateMetadata(
     openGraph: {
       title,
       description,
-      url: `https://notehub.com/notes/${params.id}`,
+      url: `https://notehub.com/notes/${id}`,
       images: [
         {
           url: 'https://ac.goit.global/fullstack/react/notehub-og-meta.jpg',
@@ -45,7 +44,6 @@ type Props = {
 
 export default async function NoteDetailsPage({ params }: Props) {
   const { id } = await params;
-
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
@@ -55,7 +53,7 @@ export default async function NoteDetailsPage({ params }: Props) {
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <NoteDetailsClient />
+      <NoteDetailsClient id={id} />
     </HydrationBoundary>
   );
 }
